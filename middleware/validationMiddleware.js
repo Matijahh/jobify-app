@@ -17,10 +17,13 @@ const withValidationErrors = (validateValues) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         const errorMessages = errors.array().map((error) => error.msg);
+
         if (errorMessages[0].startsWith("No job"))
-          throw new UnauthorizedError("Not authorized to access this route.");
+          throw new NotFoundError(errorMessages);
         if (errorMessages[0].startsWith("Not authorized"))
           throw new UnauthorizedError("Not authorized to access this route.");
+
+        throw new BadRequestError(errorMessages);
       }
       next();
     },
